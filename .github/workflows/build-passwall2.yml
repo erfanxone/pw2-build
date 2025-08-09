@@ -1,4 +1,4 @@
-name: Build luci-app-passwall2 (24.10 rc7 / ipq807x aarch64)
+name: Build luci-app-passwall2 (24.10.0 / ipq807x aarch64)
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (empty)
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install deps
@@ -17,13 +17,13 @@ jobs:
             python3 gawk libncurses-dev zlib1g-dev libssl-dev rsync file time \
             subversion zstd
 
-      # 🔴 لینک درست SDK برای ipq807x
-      - name: Download OpenWrt SDK (24.10.0-rc7 / qualcomm ipq807x)
+      # ✅ SDK پایدار 24.10.0 برای qualcomm/ipq807x
+      - name: Download OpenWrt SDK (24.10.0 / ipq807x)
         run: |
           mkdir -p $GITHUB_WORKSPACE/sdk && cd $GITHUB_WORKSPACE/sdk
-          wget https://downloads.openwrt.org/releases/24.10.0-rc7/targets/qualcomm/ipq807x/openwrt-sdk-24.10.0-rc7-qualcomm-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-          tar --use-compress-program=unzstd -xf openwrt-sdk-24.10.0-rc7-qualcomm-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-          echo "SDK_DIR=$(ls -d openwrt-sdk-24.10.0-rc7-qualcomm-ipq807x_* )" >> $GITHUB_ENV
+          wget https://downloads.openwrt.org/releases/24.10.0/targets/qualcomm/ipq807x/openwrt-sdk-24.10.0-qualcomm-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+          tar --use-compress-program=unzstd -xf openwrt-sdk-24.10.0-qualcomm-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+          echo "SDK_DIR=$(ls -d openwrt-sdk-24.10.0-qualcomm-ipq807x_* )" >> $GITHUB_ENV
 
       - name: Prepare feeds
         run: |
@@ -36,7 +36,7 @@ jobs:
           cd "$SDK_DIR"
           git clone https://github.com/xiaorouji/openwrt-passwall2.git package/passwall2
 
-      # برای خطای po2lmo/host-tools
+      # ابزارهای میزبان LuCI (برای جلوگیری از خطای po2lmo و ... )
       - name: Build LuCI host tools
         run: |
           cd "$SDK_DIR"
